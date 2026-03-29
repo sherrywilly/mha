@@ -200,7 +200,7 @@ def upgrade() -> None:
 
     op.create_table('cd_transactions',
         sa.Column('id', sa.String(), server_default=sa.text("gen_random_uuid()::text"), nullable=False),
-        sa.Column('cd_type', sa.String(), nullable=False),
+        sa.Column('transaction_type', sa.String(), nullable=False),
         sa.Column('drug_id', sa.String(), nullable=False),
         sa.Column('resident_id', sa.String(), nullable=True),
         sa.Column('order_id', sa.String(), nullable=True),
@@ -327,7 +327,20 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint('id')
     )
 
+    op.create_table('ingested_events',
+        sa.Column('id', sa.String(), server_default=sa.text("gen_random_uuid()::text"), nullable=False),
+        sa.Column('organisation_id', sa.String(), nullable=False),
+        sa.Column('client_event_id', sa.String(), nullable=False),
+        sa.Column('event_type', sa.String(), nullable=False),
+        sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('organisation_id', 'client_event_id', name='uq_ingested_event_org_client')
+    )
+    op.create_index('ix_ingested_events_organisation_id', 'ingested_events', ['organisation_id'], unique=False)
+
 def downgrade() -> None:
+    op.drop_index('ix_ingested_events_organisation_id', table_name='ingested_events')
+    op.drop_table('ingested_events')
     op.drop_table('medication_errors')
     op.drop_table('prescription_requests')
     op.drop_table('gp_contacts')
