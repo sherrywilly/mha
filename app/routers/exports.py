@@ -118,7 +118,8 @@ async def export_cd_register(
             )
         )
         txs = result.scalars().all()
-        import csv, io
+        import csv
+        import io
         buf = io.StringIO()
         writer = csv.writer(buf)
         writer.writerow(["id", "drug_id", "tx_type", "quantity", "unit", "performed_at", "witness_status"])

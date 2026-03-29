@@ -174,7 +174,7 @@ def test_generate_dose_due_idempotent(client: TestClient, admin_headers: dict, s
     )
     assert resp1.status_code == 200
     assert resp2.status_code == 200
-    # Second call should return 0 new doses (already exist)
+    # Second call returns 0 new doses because all dose_keys already exist
     assert len(resp2.json()) == 0
 
 

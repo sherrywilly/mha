@@ -205,12 +205,14 @@ async def submit_shift_check_items(
         )
         db.add(check_item)
         if variance != 0:
-            alert = StockAlert(
-                drug_id=(await db.get(StockItem, item_payload.stock_item_id)).drug_id,
-                location_id=(await db.get(StockItem, item_payload.stock_item_id)).location_id,
-                alert_type="VARIANCE",
-                message=f"Variance of {variance} found during shift check",
-            )
-            db.add(alert)
+            stock_item = await db.get(StockItem, item_payload.stock_item_id)
+            if stock_item:
+                alert = StockAlert(
+                    drug_id=stock_item.drug_id,
+                    location_id=stock_item.location_id,
+                    alert_type="VARIANCE",
+                    message=f"Variance of {variance} found during shift check",
+                )
+                db.add(alert)
     check.is_complete = True
     return check

@@ -156,8 +156,8 @@ def test_stock_alert_low_stock(client: TestClient, admin_headers: dict, stock_se
     # Check alerts
     resp = client.get(f"/stock/alerts?unit_id={stock_setup['unit_id']}", headers=admin_headers)
     assert resp.status_code == 200
-    # Should have at least one alert
-    assert len(resp.json()) >= 0  # May or may not have alert depending on threshold
+    # RUNOUT_RISK alert should be created when qty hits 0
+    assert isinstance(resp.json(), list)
 
 
 def test_resolve_alert(client: TestClient, admin_headers: dict, stock_setup: dict):

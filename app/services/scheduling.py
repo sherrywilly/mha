@@ -43,11 +43,13 @@ async def generate_dose_due(
 
         elif order.frequency_type == FrequencyType.INTERVAL:
             if order.frequency_interval_hours:
+                # Build a single pass over the whole date range on first day only
                 start_dt = datetime.combine(date_from, datetime.min.time()).replace(hour=8)
-                current_dt = start_dt
                 end_dt = datetime.combine(date_to, datetime.max.time())
-                while current_dt.date() == current and current_dt <= end_dt:
-                    scheduled_dts.append(current_dt)
+                current_dt = start_dt
+                while current_dt <= end_dt:
+                    if current_dt.date() == current:
+                        scheduled_dts.append(current_dt)
                     current_dt += timedelta(hours=order.frequency_interval_hours)
 
         elif order.frequency_type == FrequencyType.WEEKLY:
@@ -87,7 +89,8 @@ async def generate_dose_due(
                 existing_keys.add(key)
 
         if order.frequency_type == FrequencyType.INTERVAL:
-            break  # handled differently above
+            current += timedelta(days=1)
+            continue
 
         current += timedelta(days=1)
 
