@@ -18,7 +18,7 @@ class CDStatus(str, enum.Enum):
 class CDTransaction(Base, AuditMixin):
     __tablename__ = "cd_transactions"
     id = Column(String, primary_key=True, default=lambda: str(uuid4()))
-    transaction_type = Column("cd_type", Enum(CDTransactionType, native_enum=False), nullable=False)
+    transaction_type = Column("transaction_type", Enum(CDTransactionType, native_enum=False), nullable=False)
     drug_id = Column(String, ForeignKey("drugs.id"), nullable=False)
     resident_id = Column(String, ForeignKey("residents.id"), nullable=True)
     order_id = Column(String, ForeignKey("medication_orders.id"), nullable=True)
