@@ -1,0 +1,13 @@
+ROLE_ADMIN = "admin"
+ROLE_MANAGER = "manager"
+ROLE_NURSE = "nurse"
+ROLE_SENIOR_CARER = "senior_carer"
+ROLE_CARER = "carer"
+
+PERM_MANAGE_USERS = "manage_users"
+PERM_MANAGE_ORG = "manage_org"
+PERM_VIEW_ALL_UNITS = "view_all_units"
+PERM_ADMINISTER_CD = "administer_cd"
+PERM_WITNESS_CD = "witness_cd"
+PERM_CLOSE_ERRORS = "close_errors"
+PERM_APPROVE_PRESCRIPTIONS = "approve_prescriptions"
