@@ -1,5 +1,5 @@
 from uuid import uuid4
-from sqlalchemy import Column, String, DateTime, func
+from sqlalchemy import Column, String, DateTime, UniqueConstraint, func
 from app.models.base import Base
 
 
@@ -15,5 +15,5 @@ class IngestedEvent(Base):
 
     __table_args__ = (
         # Unique per (organisation, client_event_id) pair
-        __import__("sqlalchemy").UniqueConstraint("organisation_id", "client_event_id", name="uq_ingested_event_org_client"),
+        UniqueConstraint("organisation_id", "client_event_id", name="uq_ingested_event_org_client"),
     )

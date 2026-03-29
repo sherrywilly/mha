@@ -113,6 +113,9 @@ def test_admin_record_idempotency(client, admin_token, admin_user, test_order, t
     assert resp1.status_code in (200, 201)
     resp2 = client.post("/api/v1/administration-records", json=payload, headers={"Authorization": f"Bearer {admin_token}"})
     assert resp2.status_code in (200, 201)
+    # Both responses should return the same record
+    assert resp1.json()["id"] == resp2.json()["id"]
+    assert resp1.json()["client_event_id"] == resp2.json()["client_event_id"]
     count = db.query(AdministrationRecord).filter_by(client_event_id=client_event_id).count()
     assert count == 1
 
@@ -131,5 +134,8 @@ def test_stock_transaction_idempotency(client, admin_token, admin_user, test_sto
     assert resp1.status_code in (200, 201)
     resp2 = client.post("/api/v1/stock/transactions", json=payload, headers={"Authorization": f"Bearer {admin_token}"})
     assert resp2.status_code in (200, 201)
+    # Both responses should return the same record
+    assert resp1.json()["id"] == resp2.json()["id"]
+    assert resp1.json()["client_event_id"] == resp2.json()["client_event_id"]
     count = db.query(StockTransaction).filter_by(client_event_id=client_event_id).count()
     assert count == 1

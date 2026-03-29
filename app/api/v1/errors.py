@@ -23,11 +23,11 @@ def list_errors(db: Session = Depends(get_db), _=Depends(get_current_user)):
     return db.query(MedicationError).all()
 
 @router.post("/medication-errors/{error_id}/close", response_model=MedicationErrorOut)
-def close_error(error_id: str, closed_by_id: str, db: Session = Depends(get_db), _=Depends(require_role(ROLE_ADMIN, ROLE_MANAGER))):
+def close_error(error_id: str, db: Session = Depends(get_db), current_user=Depends(require_role(ROLE_ADMIN, ROLE_MANAGER))):
     err = db.query(MedicationError).filter(MedicationError.id == error_id).first()
     if not err:
         raise HTTPException(status_code=404, detail="Not found")
-    err.closed_by_id = closed_by_id
+    err.closed_by_id = current_user.id
     err.closed_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(err)
